@@ -39,7 +39,7 @@ module Snapsync
                         channel.on_data do |ch, data|
                             read_buffer_in.write(data)
                         end
-                        channel.on_extended_data do |ch, data|
+                        channel.on_extended_data do |ch, type, data|
                             data = data.chomp
                             if data.length > 0
                                 Snapsync.error data
