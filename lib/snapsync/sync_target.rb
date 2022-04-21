@@ -190,7 +190,7 @@ module Snapsync
 
             Snapsync.info "Flushing data to disk"
             begin
-                btrfs.run("subvolume", "sync", self.dir.to_s)
+                btrfs.run("subvolume", "sync", self.dir.path_part)
             rescue Btrfs::Error
             end
 
