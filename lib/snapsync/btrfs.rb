@@ -72,7 +72,7 @@ module Snapsync
             Snapsync.debug "Btrfs(\"#{mountpoint}\").popen: #{args}"
 
             if @mountpoint.is_a? RemotePathname
-                proc = SSHPopen.new(@mountpoint, [btrfs_prog, *args], **options)
+                proc = SSHPopenExe.new(@mountpoint, [btrfs_prog, *args], **options)
                 return yield(proc)
             else
                 # @type [IO,IO]
