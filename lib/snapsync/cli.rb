@@ -311,11 +311,14 @@ While it can easily be done manually, this command makes sure that the snapshots
             default: '/etc/snapsync.conf'
         def auto_sync
             handle_class_options
-            auto = AutoSync.new(SnapperConfig.default_config_dir, snapsync_config_file: Pathname.new(options[:config_file]))
-            if options[:one_shot]
-                auto.sync
-            else
+
+            while true
+                auto = AutoSync.new(SnapperConfig.default_config_dir, snapsync_config_file: Pathname.new(options[:config_file]))
                 auto.run
+                break if options[:one_shot]
+
+                Snapsync.info "done all declared autosync partitions, sleeping #{period}s"
+                sleep 600
             end
         end
 
