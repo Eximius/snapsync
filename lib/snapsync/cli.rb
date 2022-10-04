@@ -2,6 +2,8 @@ require 'thor'
 require 'snapsync'
 require 'set'
 
+require_relative 'tasks/AutoSync'
+
 module Snapsync
     class CLI < Thor
         class_option :debug, type: :boolean, default: false

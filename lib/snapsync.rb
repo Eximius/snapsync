@@ -33,7 +33,7 @@ require 'snapsync/sync_last_policy'
 require 'snapsync/partitions_monitor'
 require 'snapsync/sync'
 require 'snapsync/sync_all'
-require 'snapsync/auto_sync'
+
 
 module Logging
     module Installer
