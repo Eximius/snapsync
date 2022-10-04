@@ -1,10 +1,12 @@
+require_relative 'Task'
+
 module Snapsync
     # Implementation of the auto-sync feature
     #
     # This class implements the 'snapsync auto' functionality. It monitors for
     # partition availability, and will run sync-all on each (declared) targets
     # when they are available, optionally auto-mounting them
-    class AutoSync
+    class AutoSync < Task
         AutoSyncTarget = Struct.new :partition_uuid, :mountpoint, :relative, :automount, :name
 
         attr_reader :config_dir
@@ -34,7 +36,7 @@ module Snapsync
             migrated = false
             if conf.is_a? Array
                 # Version 1
-                Snapsync.info "Migrating config from v1 to v2"
+                info "Migrating config from v1 to v2"
                 conf = config_migrate_v1_v2(conf)
                 migrated = true
             elsif conf['version'] != 2
@@ -47,7 +49,7 @@ module Snapsync
         end
 
         private def config_migrate_v1_v2(conf)
-            Snapsync.info "Migrating config from version 1 to version 2"
+            info "Migrating config from version 1 to version 2"
             targets = conf.map do |target|
                 target['relative'] = target['path']
                 target.delete('path')
@@ -122,11 +124,11 @@ module Snapsync
                     mountpoint = target.mountpoint
                     if not mountpoint.mountpoint?
                         if not target.automount
-                            Snapsync.info "partition #{uuid} is present, but not mounted and automount is false. Ignoring"
+                            info "partition #{uuid} is present, but not mounted and automount is false. Ignoring"
                             next
                         end
 
-                        Snapsync.info "partition #{uuid} is present, but not mounted, automounting"
+                        info "partition #{uuid} is present, but not mounted, automounting"
                         begin
                             if mountpoint.is_a? RemotePathname
                                 # TODO: automounting of remote paths
@@ -136,7 +138,7 @@ module Snapsync
                             end
                             mounted = true
                         rescue Exception => e
-                            Snapsync.warn "failed to mount, ignoring this target"
+                            warn "failed to mount, ignoring this target"
                             next
                         end
                     end
@@ -182,9 +184,13 @@ module Snapsync
             end
         end
 
-        def run
+        def _task_name
+            'Auto-Sync'
+        end
+
+        def _run
             each_available_autosync_target do |path, t|
-                Snapsync.info "sync-all on #{path} (partition #{t.partition_uuid})"
+                info "sync-all on #{path} (partition #{t.partition_uuid})"
                 op = SyncAll.new(path, config_dir: config_dir)
                 op.run
             end
