@@ -24,6 +24,7 @@ require 'snapsync/cleanup'
 
 require 'snapsync/remote_pathname'
 require 'snapsync/ssh_popen'
+require 'snapsync/ssh_popen_exe'
 
 require 'snapsync/default_sync_policy'
 require 'snapsync/timeline_sync_policy'
