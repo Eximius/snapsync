@@ -6,6 +6,11 @@ module Snapsync
     class CLI < Thor
         class_option :debug, type: :boolean, default: false
         class_option :ssh_debug, type: :boolean, default: false
+        class_option :systemd, type: :boolean, default: false,
+                     desc: "Tells snapsync it is being run from a systemd service"
+
+        # Tells snapsync we are run from systemd service
+        class_option :systemd, type: :boolean, default: false
 
         no_commands do
             def config_from_name(name)
@@ -25,6 +30,7 @@ module Snapsync
                 end
 
                 Snapsync.SSH_DEBUG = options[:ssh_debug]
+                Snapsync.SYSTEMD = options[:systemd]
             end
 
             # Resolves a path (or nil) into a list of snapsync targets and
