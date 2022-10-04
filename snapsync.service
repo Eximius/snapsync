@@ -4,7 +4,7 @@ Wants=udisks2.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/env HOME=/root /usr/bin/snapsync auto-sync --one-shot --systemd
+ExecStart=/usr/bin/env HOME=/root /usr/bin/snapsync auto-sync --one-shot --systemd --notify
 Nice=19
 IOSchedulingClass=idle
 KillSignal=SIGINT

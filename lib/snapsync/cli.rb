@@ -8,9 +8,8 @@ module Snapsync
         class_option :ssh_debug, type: :boolean, default: false
         class_option :systemd, type: :boolean, default: false,
                      desc: "Tells snapsync it is being run from a systemd service"
-
-        # Tells snapsync we are run from systemd service
-        class_option :systemd, type: :boolean, default: false
+        class_option :notify, type: :boolean, default: false,
+                     desc: "Use libnotify to notify all users in system"
 
         no_commands do
             def config_from_name(name)
@@ -31,6 +30,7 @@ module Snapsync
 
                 Snapsync.SSH_DEBUG = options[:ssh_debug]
                 Snapsync.SYSTEMD = options[:systemd]
+                Snapsync.NOTIFY  = options[:notify]
             end
 
             # Resolves a path (or nil) into a list of snapsync targets and

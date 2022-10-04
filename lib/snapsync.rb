@@ -105,9 +105,11 @@ module Snapsync
     class << self
         attr_accessor :SSH_DEBUG
         attr_accessor :SYSTEMD
+        attr_accessor :NOTIFY
     end
     Snapsync.SSH_DEBUG = false
     Snapsync.SYSTEMD   = false
+    Snapsync.NOTIFY    = false
 
     # @param [String] dir
     # @return [AgnosticPath]
