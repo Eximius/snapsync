@@ -33,6 +33,7 @@ EOD
   spec.add_dependency 'net-sftp', "~> 3.0.0"
   spec.add_dependency 'ed25519', ">= 1.2"
   spec.add_dependency 'bcrypt_pbkdf', ">= 1.0"
+  spec.add_dependency 'libnotify', '~> 0.9'
 
   spec.add_development_dependency "bundler", "~> 2"
   spec.add_development_dependency "rake", "~> 13"
