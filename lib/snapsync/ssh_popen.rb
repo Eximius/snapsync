@@ -60,17 +60,18 @@ module Snapsync
                             raise ExitSignal, "Exited due to signal: #{exit_signal}"
                         end
 
-                        channel.on_process do
-                            begin
-                                channel.send_data(write_buffer_out.read_nonblock(2 << 20))
-                            rescue IO::EAGAINWaitReadable
-                            end
-                        end
-
                         channel.exec(Shellwords.join command)
                     end
 
-                    ssh.loop(0.001) {
+                    write_buffer_out.extend(Net::SSH::BufferedIo)
+                    ssh.listen_to(write_buffer_out) do
+                        begin
+                            channel.send_data(write_buffer_out.read_nonblock(2 << 20))
+                        rescue IO::EAGAINWaitReadable
+                        end
+                    end
+
+                    ssh.loop {
                         if write_buffer_out.closed?
                             channel.close
                         end
