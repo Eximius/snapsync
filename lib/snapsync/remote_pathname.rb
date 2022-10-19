@@ -300,6 +300,7 @@ module Snapsync
     end
 
     def read
+      Snapsync.debug "RemotePathname ('#{uri}').read"
       begin
         sftp_f.open(uri.path).read
       rescue Net::SFTP::StatusException => e
