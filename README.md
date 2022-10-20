@@ -8,22 +8,29 @@ receive.
 
 It can be used in two modes:
  - in manual mode, you run snapsync
+ - systemd timer, runs snapsync periodically
 
 ## Installation
 
 You need to make sure that you've installed Ruby's bundler. On Ubuntu, run
-    $ apt install bundler
+    `$ apt install bundler`
 
 Then, the following will install snapsync in /opt/snapsync
 
     $ wget https://raw.githubusercontent.com/doudou/snapsync/master/install.sh
     $ sh install.sh
 
-The script will use sudo to get root rights when required. Add /opt/snapsync/bin
-to your PATH if you want to use 'snapsync' as-is. Otherwise, you will have to
-refer to /opt/snapsync/bin/snapsync explicitely. If it seems that you are using
-systemd, the script also installs snapsync's systemd service file into the
-system, enables and starts it.
+The script will use sudo to get root rights when required. Add `/opt/snapsync/bin`
+to your PATH if you want to use `snapsync` as-is. Otherwise, you will have to
+refer to `/opt/snapsync/bin/snapsync` explicitely. 
+
+If it seems that you are using systemd, the script also installs snapsync's systemd service and timer files into the system, enables and starts `snapsync-local.timer` and `snapsync-remote.timer`. By default the timers run every day at 20:00.
+
+## Systemd Units
+For remote targets, the `snapsync-remote.timer` only is active while connected to an unmetered connection. This is checked
+through NetworkManager. So the setup depends on NetworkManager. If the timer was not run last scheduled time (at 20:00), it will run when it next connects to an unmetered connection.
+
+If you want remote syncing to work without NetworkManager, enable `snapsync-remote-always.timer` . This timer however does not care if the device is connected to the internet or whether the connection is metered.
 
 ## Usage
 

@@ -1,0 +1,13 @@
+[Unit]
+Description=service that synchronizes snapper snapshots to other media
+Wants=udisks2.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/env HOME=/root /usr/bin/snapsync auto-sync --one-shot --systemd --notify --remote-only
+Nice=19
+IOSchedulingClass=idle
+KillSignal=SIGINT
+
+[Install]
+WantedBy=default.target

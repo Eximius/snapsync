@@ -1,5 +1,5 @@
 [Unit]
-Description=Run snapsync
+Description=Run snapsync for local filesystems
 
 [Timer]
 OnCalendar=*-*-* 20:00:00

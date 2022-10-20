@@ -2,7 +2,6 @@
 
 target=`mktemp -d --suffix _snapsync-install`
 cd $target
-echo "$target"
 cat > Gemfile <<GEMFILE
 source "https://rubygems.org"
 gem 'snapsync'
@@ -17,10 +16,11 @@ sudo chmod go+rX /opt/snapsync
 
 if test -d /lib/systemd/system; then
     snapsync_gem=`bundler show snapsync`
-    sudo ln -s $snapsync_gem/snapsync.service $snapsync_gem/snapsync.timer /lib/systemd/system
-    ( sudo systemctl stop snapsync.timer
-      sudo systemctl enable snapsync.timer
-      sudo systemctl start snapsync.timer )
+    sed -i /opt/snapsync/systemd/snapsync-check-is-connection-unmetered.service \
+        -e 's:/usr/lib/snapsync/:/opt/snapsync/usrlib/:'
+    sudo cp /opt/snapsync/systemd/* /lib/systemd/system
+    ( sudo systemctl enable snapsync-local.timer
+      sudo systemctl enable snapsync-remote.timer)
 fi
 
 rm -rf $target

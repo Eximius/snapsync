@@ -1,0 +1,8 @@
+[Unit]
+Description=Checks if the current default connection is unmetered
+
+[Service]
+ExecStart=/usr/bin/sleep infinity
+
+[Install]
+WantedBy=NetworkManager-dispatcher.service

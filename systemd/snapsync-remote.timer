@@ -1,0 +1,12 @@
+[Unit]
+Description=Run snapsync for remote filesystems
+BindsTo=snapsync-is-connection-unmetered.service
+After=snapsync-is-connection-unmetered.service
+
+[Timer]
+OnCalendar=*-*-* 20:00:00
+RandomizedDelaySec=5min
+Persistent=true
+
+[Install]
+WantedBy=snapsync-is-connection-unmetered.service

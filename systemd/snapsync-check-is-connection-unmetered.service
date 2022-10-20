@@ -1,0 +1,10 @@
+[Unit]
+Description=Checks if the current default connection is unmetered
+After=NetworkManager-dispatcher.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/snapsync/snapsync-check-is-connection-unmetered.sh
+
+[Install]
+WantedBy=NetworkManager-dispatcher.service
