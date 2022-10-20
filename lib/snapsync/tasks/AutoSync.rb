@@ -16,9 +16,16 @@ module Snapsync
 
         DEFAULT_CONFIG_PATH = Pathname.new('/etc/snapsync.conf')
 
-        def initialize(config_dir = SnapperConfig.default_config_dir, snapsync_config_file: DEFAULT_CONFIG_PATH)
+        def initialize(config_dir = SnapperConfig.default_config_dir,
+                       snapsync_config_file: DEFAULT_CONFIG_PATH,
+                       sync_local: true,
+                       sync_remote: true)
             @config_dir = config_dir
             @targets = Hash.new
+
+            @sync_local = sync_local
+            @sync_remote = sync_remote
+
             @partitions = PartitionsMonitor.new
             partitions.poll
 
@@ -189,7 +196,25 @@ module Snapsync
         end
 
         def _run
+            msg = "Running AutoSync"
+
+            if @sync_remote and not @sync_local
+                msg += ' only on remote targets'
+            end
+            if @sync_local and not @sync_remote
+                msg += ' only on local targets'
+            end
+            info msg
+
             each_available_autosync_target do |path, t|
+                if path.is_a? RemotePathname and not @sync_remote
+                    next
+                end
+
+                if path.is_a? Pathname and not @sync_local
+                    next
+                end
+
                 info "sync-all on #{path} (partition #{t.partition_uuid})"
                 op = SyncAll.new(path, config_dir: config_dir)
                 op.run

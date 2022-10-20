@@ -309,11 +309,20 @@ While it can easily be done manually, this command makes sure that the snapshots
             default: false
         option :config_file, desc: "path to the config file (defaults to /etc/snapsync.conf)",
             default: '/etc/snapsync.conf'
+        option :local_only, desc: "Only synchronize to local targets", type: :boolean, default: false
+        option :remote_only, desc: "Only synchronize to remote targets", type: :boolean, default: false
         def auto_sync
             handle_class_options
 
+            if options[:local_only] and options[:remote_only]
+                raise ArgumentError, '--local-only and --remote-only cannot be used together'
+            end
+
             while true
-                auto = AutoSync.new(SnapperConfig.default_config_dir, snapsync_config_file: Pathname.new(options[:config_file]))
+                auto = AutoSync.new(SnapperConfig.default_config_dir,
+                                    snapsync_config_file: Pathname.new(options[:config_file]),
+                                    sync_local: options[:local_only] || !options[:remote_only],
+                                    sync_remote: options[:remote_only] || !options[:local_only])
                 auto.run
                 break if options[:one_shot]
 
