@@ -147,7 +147,8 @@ module Snapsync
         raise RuntimeError.new('Host cannot be nil for remote pathname') if uri.host.nil?
 
         Snapsync.debug "Opening new ssh session: "+uri.to_s
-        @ssh = Net::SSH.start(uri.host, uri.user, password: uri.password, non_interactive: true)
+        @ssh = Net::SSH.start(uri.host, uri.user, password: uri.password, non_interactive: true,
+                              keepalive_interval: 30, keepalive: true)
 
         @sftp = @ssh.sftp
         @sftp_f = @sftp.file
@@ -179,7 +180,8 @@ module Snapsync
     # @yieldparam ssh [Net::SSH::Connection::Session]
     def dup_ssh(&block)
       Snapsync.debug "Opening new ssh session: "+uri.to_s
-      Net::SSH.start(uri.host, uri.user, password: uri.password, non_interactive: true, &block)
+      Net::SSH.start(uri.host, uri.user, password: uri.password, non_interactive: true,
+                     keepalive_interval: 30, keepalive: true, &block)
     end
 
     def exist?
